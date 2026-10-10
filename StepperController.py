@@ -3,10 +3,14 @@
 #Thonny IDE as a brige to the micrio controller, there are VS code varients
 
 #This segment of code is my own stepper controller library
-#import machine
-#import time
+#All machine code that needs to be uncommented has a %%% in front
+#uncomment the %%% and comment
+#%%%import machine
+#%%%import time
 
 #This code is for controlling steepers with the L298N Dual H-Bridge Motor controller
+
+
 class Steppers():
 
     def __init__(self, motors=[], motorID=[], mode="goto", revolution=200):
@@ -56,30 +60,37 @@ class Steppers():
                             #print(distance)
                             
                             
-    def runM(self, ID=[], dis=[], dir=[], speed=[]):
+    def runM(self, ID=[], dis=[], speed=[]):
         if self.mode == "goto":
             if len(ID)== 0 or len(dis) == 0:
                 print("Error")
                 print("goto mode on multible run requires a dis=[1,2,3] and ID=[a,b,c]")
+            
             else:
+                
                 stop = False
                 distance = dis
                 triggerlist = []
-                for i in range(len(self.motors)):
-                    if self.motorID[i] == ID:
+                for i in range(len(ID)):
+                    if self.motorID[i] == ID[i]:
                         triggerlist.append(self.motors[i])
-                        print(len(triggerlist))
-                        while stop == False:
-                            done = 0
-                            for i in range(len(distance)):
-                                if distance[i] != 0:
-                                    move=triggerlist[i]
-                                    distance[i] = move.gotoRotate(distance, dir, speed)
-                                    print(distance)
-                                else:
-                                    done += 1
-                            if done == len(triggerlist):
-                                stop = True
+                        print(triggerlist)
+                      
+                while stop == False:
+                     
+                    done = 0 
+                    for i in range(len(triggerlist)):
+                        
+                        if distance[i] != 0:
+                            move=triggerlist[i]
+                            distance[i] = move.gotoRotate(distance[i], None, None)
+                            
+                        else:
+                            done += 1
+                            
+                    if done == len(triggerlist):
+                        stop = True
+    
     def veiw(self):
         for i in range(len(self.motorID)):
             pinprint = self.motors[i]
@@ -95,10 +106,14 @@ class StepperCTL():
                         [0,1,0,0],
                         [0,0,1,0],
                         [0,0,0,1]]
-        self.stop = [0,0,0,0]
+        self.off = [0,0,0,0]
 
         self.pins = pins
-
+        #I added the build as I relized that I needed a way to initiate the machine pins so the build, which is comminted out
+        #needs to be uncommented
+        self.build = [None, None, None, None]
+        #%%%for i in range(len(self.pins)):
+        #%%%    self.build[i] = machine.Pin(self.pins[i], machine.Pin.OUT)
         self.currentPin = 0
         self.direction = direction
         self.speed = speed
@@ -114,6 +129,7 @@ class StepperCTL():
 
     def setGrid(self):
         modifyer=1
+        
         if self.distanceOff > 0:
             modifyer = -1
         if self.direction == 1:
@@ -131,7 +147,11 @@ class StepperCTL():
         for i in range(4):
             #Machine mod here, must use micropython interpreter
 #            ________________________TEST UNCOMMENT BELOW_______________________________
-            #machine.Pin(self.pins[i], triggers[i])
+            #%%%pin = self.build[i]
+            #%%%pin(triggers[i])
+            #%%%time.sleep(1/self.speed)
+            #After testing with steppers, comment out the prints as they really sllow the program down
+            #being that its unoptimised and python
             print(f"Pin:{self.pins[i]} Trigger:{triggers[i]}")
         print(f"Distance: {self.distanceOff}")
 
@@ -169,17 +189,16 @@ class StepperCTL():
             #while self.distanceOff != 0:
             #for i in range(10):
             self.trigger()
+            if self.distanceOff == 0:
+                self.Off()
             return(self.distanceOff)
-                
+        
+    def Off(self):
+        triggers = self.off
+        for i in range(4):
+            #Machine mod here, must use micropython interpreter
+#            ________________________TEST UNCOMMENT BELOW_______________________________
+            #%%%pin = self.build[i]
+            #%%%pin(triggers[i])
+            print(f"Pin:{self.pins[i]} Trigger:{triggers[i]}")            
             
-
-
-
-
-Test = Steppers()
-Test.addStepper(pins=[1,2,3,4], ID="a")
-Test.addStepper(pins=[5,6,7,8], ID="b")
-Test.addStepper(pins=[5,6,7,8], ID="b")
-Test.run(ID="b", dis=4)
-#Test.veiw()
-#Test.runM(ID=["a","b"], dis=[4,-4])
