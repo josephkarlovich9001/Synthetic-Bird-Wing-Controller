@@ -122,15 +122,51 @@ class Stepper():
                     motor = self.motors[i]
                     motor = motor.Stop()
                     
-    def Start(self, file="", ID=[], dis=[], sp=[]):              
+    def Start(self, file="", ID=[], dis=[], sp=[]):
+        
+        
+        def NumSort(sp=[]):
+            copy_list = sp[:]
+            newlist = []
+            while len(copy_list) != 0:
+                front = 0
+                for i in copy_list:
+                    if i >= front:
+                        front = i
+                newlist.append(front)
+                copy_list.remove(front)
+                
+            return newlist
 
+        def Check():
+            
+            wait=[]
+            fastest = NumSort(sp)
+            fastest = fastest[0]
+            self.time = 1/fastest
+            
+            for i in sp:
+                sleep = 1/i
+                wait.append(sleep)
+            return (wait)
+
+        def Timer():
+            print()
+
+        def Read():
+            f = open("Bcode.txt", "r")
+            for i in f:
+                line = i.split(",")
+                print(line)
+
+        Read()
 
 test = Stepper() 
 test.addMotor(pins=[1,2,3,4], ID="1")
 test.addMotor(pins=[5,6,7,8], ID="2")
 test.Set(ID="1",speed=100)
 
-test.Run(ID=["2"], dis=[54], sp=[100])
+test.Start(ID=["1","2","3"], dis=[100,54,547], sp=[100, 500, 570])
 
 
 #at speed 500 it must tick once every .002 seconds or 2 miliseconds

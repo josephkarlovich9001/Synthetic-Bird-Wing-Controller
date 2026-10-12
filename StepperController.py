@@ -150,6 +150,9 @@ class StepperCTL():
             #%%%pin = self.build[i]
             #%%%pin(triggers[i])
             #%%%time.sleep(1/self.speed)
+
+            
+
             #After testing with steppers, comment out the prints as they really sllow the program down
             #being that its unoptimised and python
             print(f"Pin:{self.pins[i]} Trigger:{triggers[i]}")

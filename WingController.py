@@ -1,4 +1,5 @@
 import StepperController
+import time
 
 WingCTL=StepperController.Steppers()
 WingCTL.addStepper(pins=[1,2,3,4], ID="a")
@@ -19,3 +20,6 @@ def UpDown():
 def UpDown():
     WingCTL.runM(ID=["a", "b"], dis=[200,200], speed=[None, None, None])
     WingCTL.runM(ID=["a", "b"], dis=[-200,-200], speed=[None, None, None])
+
+now = time.ticks_ms()
+print(now)
